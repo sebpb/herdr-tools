@@ -1,0 +1,79 @@
+id = "sebpb.herdr-tools"
+name = "herdr-tools"
+version = "0.1.0"
+min_herdr_version = "0.9.3"
+description = "Workspaces numerados en la barra lateral, chats del workspace activo, mover chats entre workspaces y ayuda de atajos propios"
+platforms = ["linux", "macos"]
+
+# Workspaces numerados: publica el token $numbered ("1. Self dev") en cada workspace.
+[[startup]]
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[events]]
+on = "workspace.created"
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[events]]
+on = "workspace.renamed"
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[events]]
+on = "workspace.moved"
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[events]]
+on = "workspace.reordered"
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[events]]
+on = "workspace.closed"
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+# Acciones para atajos de teclado: cada una abre su popup.
+[[actions]]
+id = "chats"
+title = "Chats del workspace activo"
+contexts = ["workspace"]
+command = ["sh", "scripts/open-popup.sh", "chats"]
+
+[[actions]]
+id = "move-chat"
+title = "Mover chat a otro workspace"
+contexts = ["workspace"]
+command = ["sh", "scripts/open-popup.sh", "move-chat"]
+
+[[actions]]
+id = "shortcuts"
+title = "Atajos propios"
+contexts = ["workspace"]
+command = ["sh", "scripts/open-popup.sh", "shortcuts"]
+
+[[actions]]
+id = "number-workspaces"
+title = "Renumerar workspaces"
+contexts = ["workspace"]
+command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[panes]]
+id = "chats"
+title = "Chats del workspace activo"
+placement = "popup"
+width = "70%"
+height = "50%"
+command = ["sh", "scripts/chats.sh"]
+
+[[panes]]
+id = "move-chat"
+title = "Mover chat a otro workspace"
+placement = "popup"
+width = "50%"
+height = "50%"
+command = ["sh", "scripts/move-chat.sh"]
+
+[[panes]]
+id = "shortcuts"
+title = "Atajos propios"
+placement = "popup"
+width = "80%"
+height = "70%"
+command = ["sh", "scripts/shortcuts.sh"]
