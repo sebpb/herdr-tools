@@ -5,7 +5,7 @@ Plugin de [Herdr](https://herdr.dev) con algunas mejoras para trabajar con mucho
 - **Workspaces numerados** en la barra lateral: `1. Self dev`, `2. Priorización`… El número se actualiza solo al crear, cerrar, renombrar o reordenar workspaces.
 - **Chats del workspace activo**: popup con solo los chats del workspace actual; Enter salta al elegido. (Herdr ya no permite filtrar la barra lateral por workspace).
 - **Mover chat a otro workspace**: popup con los demás workspaces; Enter manda el chat actual a una pestaña nueva de ese workspace sin reiniciarlo y te deja donde estás.
-- **Atajos propios**: popup con los atajos de tu `config.toml`, primero los comandos propios y después las acciones de Herdr que personalizaste. La ayuda completa de Herdr sigue en `prefix` y después `?`.
+- **Atajos propios**: popup con los atajos de tu `config.toml`, primero los comandos propios y después las acciones de Herdr que personalizaste. Si tenés los chats agrupados (ver abajo), también lista los gestos del mouse. La ayuda completa de Herdr sigue en `prefix` y después `?`.
 
 En los popups se filtra escribiendo, Enter confirma y Esc cierra.
 
@@ -57,6 +57,32 @@ En los popups se filtra escribiendo, Enter confirma y Esc cierra.
    ```
 
    El último comando numera los workspaces ahora; después el plugin lo hace solo, también cuando arranca el servidor.
+
+## Opcional: chats agrupados por workspace
+
+Con el build de Herdr de [sebpb/herdr](https://github.com/sebpb/herdr/tree/group-agents-by-space) (rama `group-agents-by-space`), el panel de chats muestra un encabezado por workspace con sus chats debajo, en lugar de repetir el workspace en cada fila. Además:
+
+- Arrastrar un chat lo reordena, o lo mueve a otro workspace soltándolo debajo de otro encabezado.
+- Clic derecho en un chat abre el menú de su pestaña (nueva, renombrar, cerrar); en un encabezado, el del workspace.
+
+Para compilarlo hace falta Rust y [Zig 0.16.0](https://ziglang.org/download/):
+
+```bash
+git clone -b group-agents-by-space https://github.com/sebpb/herdr.git
+cd herdr
+ZIG=/ruta/a/zig cargo build --release
+cp target/release/herdr ~/.local/bin/herdr
+```
+
+Y en el `config.toml`, después de `[ui]`:
+
+```toml
+[ui.sidebar.agents]
+group_by_space = true
+rows = [["state_icon", "machine", "tab"]]
+```
+
+`herdr update` reemplaza este build por el oficial; para conservarlo, actualizá la rama y volvé a compilar. Con el Herdr oficial, `group_by_space` se ignora y el plugin funciona igual.
 
 ## Actualizar o desinstalar
 

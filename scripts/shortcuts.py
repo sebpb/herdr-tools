@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Lista los atajos propios de Herdr leyendo config.toml: comandos propios primero,
-despues las acciones de Herdr con atajos personalizados."""
+despues las acciones de Herdr con atajos personalizados y los gestos del mouse."""
 
 import sys
 import tomllib
@@ -77,6 +77,13 @@ INDEXADOS = {
 
 FLECHAS = {"left": "←", "right": "→", "up": "↑", "down": "↓"}
 
+# Solo con el build de herdr que agrupa los chats (ui.sidebar.agents.group_by_space).
+GESTOS_CHATS = [
+    ("Arrastrar chat", "Reordenarlo o moverlo a otro workspace"),
+    ("Clic derecho en chat", "Nueva pestaña, renombrar o cerrar"),
+    ("Clic derecho en encabezado", "Renombrar o cerrar ese workspace"),
+]
+
 
 def atajo(texto):
     partes = texto.split("+")
@@ -89,7 +96,8 @@ def atajos(valor):
 
 
 def main():
-    keys = tomllib.loads(Path(sys.argv[1]).read_text()).get("keys", {})
+    config = tomllib.loads(Path(sys.argv[1]).read_text())
+    keys = config.get("keys", {})
     filas = []
     for cmd in keys.get("command", []):
         descripcion = cmd.get("description") or cmd.get("command", "").strip().splitlines()[0]
@@ -102,6 +110,9 @@ def main():
                 filas.append(("Atajos personalizados", atajo(modificador) + "+1..9", INDEXADOS.get(grupo, grupo)))
             continue
         filas.append(("Atajos personalizados", atajos(valor), ACCIONES.get(accion, accion)))
+    agentes = config.get("ui", {}).get("sidebar", {}).get("agents", {})
+    if agentes.get("group_by_space"):
+        filas.extend(("Gestos del mouse", gesto, descripcion) for gesto, descripcion in GESTOS_CHATS)
 
     if not filas:
         print("No hay atajos propios en", sys.argv[1])
