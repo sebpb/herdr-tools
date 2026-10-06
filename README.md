@@ -66,3 +66,7 @@ Para actualizar, volver a correr `herdr plugin install sebpb/herdr-tools`. Para 
 
 - La ayuda de atajos traduce al español las acciones de Herdr conocidas; las que no conoce aparecen con su nombre interno.
 - Si un chat era lo único en su workspace, al moverlo Herdr puede cerrar ese workspace.
+
+## Licencia
+
+MIT. Ver [LICENSE](LICENSE).
