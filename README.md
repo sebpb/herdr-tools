@@ -82,7 +82,24 @@ group_by_space = true
 rows = [["state_icon", "machine", "tab"]]
 ```
 
-`herdr update` reemplaza este build por el oficial; para conservarlo, actualizá la rama y volvé a compilar. Con el Herdr oficial, `group_by_space` se ignora y el plugin funciona igual.
+### Actualizar Herdr sin perder los cambios
+
+`herdr update` reemplaza este build por el oficial. En su lugar, usá `scripts/update-herdr.sh`:
+
+```bash
+sh ~/Proyectos/herdr-tools/scripts/update-herdr.sh
+```
+
+El script:
+
+1. Busca la última versión estable de Herdr y aplica encima los cambios de la rama. Si no aplican limpio, frena sin tocar nada y hay que adaptarlos a mano.
+2. Compila, corre los tests del panel de chats e instala el binario. El anterior queda como `herdr.prev` al lado.
+3. Sube la rama actualizada al fork.
+4. Ofrece pasar el servidor al binario nuevo en vivo, sin cortar los chats (lo mismo que `herdr update --handoff`).
+
+Si ya estás en la última versión no hace nada; `--force` recompila igual. Se configura con variables de entorno: `HERDR_FORK_DIR` (clon del fork, por defecto `~/Proyectos/herdr`), `HERDR_FORK_BRANCH`, `HERDR_FORK_REMOTE` (por defecto `fork`) y `ZIG` (por defecto, el Zig 0.16 de `~/.local/opt`).
+
+Con el Herdr oficial, `group_by_space` se ignora y el plugin funciona igual.
 
 ## Actualizar o desinstalar
 
