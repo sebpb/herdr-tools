@@ -2,6 +2,7 @@
 
 Plugin de [Herdr](https://herdr.dev) con algunas mejoras para trabajar con muchos chats:
 
+- **Proyectos**: popup con tus proyectos, cada uno con sus propios workspaces y chats. Al cambiar de proyecto, el actual se suspende: se cierran sus terminales y, cuando volvés, se recuperan los workspaces y los chats de Claude retoman su conversación. Ver [Proyectos](#proyectos).
 - **Workspaces numerados** en la barra lateral: `1. Self dev`, `2. Priorización`… El número se actualiza solo al crear, cerrar, renombrar o reordenar workspaces.
 - **Chats del workspace activo**: popup con solo los chats del workspace actual; Enter salta al elegido. (Herdr ya no permite filtrar la barra lateral por workspace).
 - **Mover chat a otro workspace**: popup con los demás workspaces; Enter manda el chat actual a una pestaña nueva de ese workspace sin reiniciarlo y te deja donde estás.
@@ -25,6 +26,12 @@ En los popups se filtra escribiendo, Enter confirma y Esc cierra.
 2. Agregar a tu `config.toml` (`herdr --help` muestra dónde está). Los atajos son una sugerencia: cambialos si ya usás esas teclas. Los bloques `[[keys.command]]` van después de tu sección `[keys]`, y `[ui.sidebar.spaces]` después de `[ui]`.
 
    ```toml
+   [[keys.command]]
+   key = "ctrl+alt+p"
+   type = "plugin_action"
+   command = "sebpb.herdr-tools.projects"
+   description = "proyectos"
+
    [[keys.command]]
    key = "ctrl+alt+v"
    type = "plugin_action"
@@ -57,6 +64,41 @@ En los popups se filtra escribiendo, Enter confirma y Esc cierra.
    ```
 
    El último comando numera los workspaces ahora; después el plugin lo hace solo, también cuando arranca el servidor.
+
+## Proyectos
+
+Cada proyecto es una [sesión de Herdr](https://herdr.dev/docs/concepts/#session): un servidor aparte con sus propios workspaces, pestañas y chats, guardados en disco. El proyecto de siempre es `default`.
+
+Para cambiar de proyecto sin salir de Herdr, hay que abrirlo con el lanzador `herdr-proyectos` en lugar de `herdr`:
+
+```bash
+ln -s ~/Proyectos/herdr-tools/scripts/herdr-proyectos ~/.local/bin/herdr-proyectos
+herdr-proyectos           # abre el último proyecto usado
+herdr-proyectos trabajo   # o uno en particular
+```
+
+Si tu terminal abre `herdr` sola al iniciar, cambiá ese comando por `herdr-proyectos`.
+
+En el popup (`ctrl+alt+p`):
+
+- **Enter** cambia al proyecto elegido. `●` marca el actual y `○` los que siguen abiertos en otra ventana.
+- Si escribís un nombre que no existe y das **Enter** (o **ctrl-n**, aunque coincida con otro), se crea un proyecto nuevo y se pide la carpeta donde arranca.
+- **ctrl-x** borra el proyecto elegido con todo lo que tenga guardado. No se puede borrar el actual.
+
+Al cambiar, el proyecto actual se suspende: Herdr guarda sus workspaces y cierra todas sus terminales. Los chats de Claude (y los demás agentes con retomado nativo) vuelven con su conversación al reabrir el proyecto. Todo lo demás vuelve como una shell vacía en la misma carpeta. Si hay algo que se perdería (un chat trabajando, un servidor de dev, tests corriendo), el popup lo lista y pide confirmación antes de cambiar.
+
+El plugin también publica el nombre del proyecto como token `$project` en cada workspace, por si lo querés ver en la barra lateral:
+
+```toml
+[ui.sidebar.spaces]
+rows = [["state_icon", "$numbered"], ["$project", "branch", "git_status"]]
+```
+
+Notas:
+
+- Los nombres de sesión solo admiten letras, números, `.`, `_` y `-`: «Cliente Álamo» queda como `cliente-alamo`, pero el popup sigue mostrando el nombre que escribiste.
+- Si abriste Herdr con `herdr` y no con el lanzador, cambiar de proyecto igual suspende el actual, pero Herdr se cierra y hay que abrir el otro a mano con `herdr --session <nombre>`. El popup avisa antes.
+- Los comandos `herdr` que corras dentro de un pane apuntan siempre al proyecto de ese pane.
 
 ## Opcional: chats agrupados por workspace
 

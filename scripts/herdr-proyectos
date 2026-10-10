@@ -1,0 +1,24 @@
+#!/bin/sh
+# Abre Herdr en un proyecto (una sesion de Herdr). Cuando el popup Proyectos suspende el
+# actual, el cliente se cierra y este lanzador abre el proyecto elegido.
+# Uso: herdr-proyectos [proyecto]   (sin argumento, el ultimo usado)
+state=${XDG_STATE_HOME:-$HOME/.local/state}/herdr-tools/projects
+mkdir -p "$state"
+project=${1:-$(cat "$state/last" 2>/dev/null)}
+project=${project:-default}
+dir=
+
+echo $$ >"$state/launcher.pid"
+trap 'rm -f "$state/launcher.pid"' EXIT
+trap 'exit 130' INT TERM HUP
+
+while :; do
+  rm -f "$state/next"
+  printf '%s\n' "$project" >"$state/last"
+  (
+    if [ -n "$dir" ]; then cd "$dir" || exit; fi
+    exec herdr --session "$project"
+  )
+  [ -f "$state/next" ] || break
+  IFS=$(printf '\t') read -r project dir <"$state/next"
+done

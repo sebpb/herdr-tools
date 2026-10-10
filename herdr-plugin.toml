@@ -2,10 +2,10 @@ id = "sebpb.herdr-tools"
 name = "herdr-tools"
 version = "0.1.0"
 min_herdr_version = "0.9.3"
-description = "Workspaces numerados en la barra lateral, chats del workspace activo, mover chats entre workspaces y ayuda de atajos propios"
+description = "Workspaces numerados en la barra lateral, proyectos separados, chats del workspace activo, mover chats entre workspaces y ayuda de atajos propios"
 platforms = ["linux", "macos"]
 
-# Workspaces numerados: publica el token $numbered ("1. Self dev") en cada workspace.
+# Workspaces numerados: publica los tokens $numbered ("1. Self dev") y $project en cada workspace.
 [[startup]]
 command = ["sh", "scripts/workspace-numbers.sh"]
 
@@ -31,6 +31,12 @@ command = ["sh", "scripts/workspace-numbers.sh"]
 
 # Acciones para atajos de teclado: cada una abre su popup.
 [[actions]]
+id = "projects"
+title = "Proyectos"
+contexts = ["workspace"]
+command = ["sh", "scripts/open-popup.sh", "projects"]
+
+[[actions]]
 id = "chats"
 title = "Chats del workspace activo"
 contexts = ["workspace"]
@@ -53,6 +59,14 @@ id = "number-workspaces"
 title = "Renumerar workspaces"
 contexts = ["workspace"]
 command = ["sh", "scripts/workspace-numbers.sh"]
+
+[[panes]]
+id = "projects"
+title = "Proyectos"
+placement = "popup"
+width = "70%"
+height = "50%"
+command = ["sh", "scripts/projects.sh"]
 
 [[panes]]
 id = "chats"
