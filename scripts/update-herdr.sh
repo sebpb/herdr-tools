@@ -5,7 +5,7 @@
 set -eu
 
 repo=${HERDR_FORK_DIR:-$HOME/Proyectos/herdr}
-branch=${HERDR_FORK_BRANCH:-group-agents-by-space}
+branch=${HERDR_FORK_BRANCH:-projects}
 remote=${HERDR_FORK_REMOTE:-fork}
 zig=${ZIG:-$(ls -d "$HOME"/.local/opt/zig-*-0.16.*/zig 2>/dev/null | tail -n1)}
 force=
@@ -47,9 +47,9 @@ fi
 
 echo "Compilando..."
 ZIG=$zig cargo build --release --locked || rollback "fallo la compilacion"
-echo "Probando el panel de chats..."
-ZIG=$zig cargo test --release --locked --bin herdr -- grouped_agent agent_sidebar api_pane_move_to_new_tab \
-  >/dev/null 2>&1 || rollback "fallan los tests del panel"
+echo "Probando la barra lateral..."
+ZIG=$zig cargo test --release --locked --bin herdr -- grouped_agent agent_sidebar api_pane_move_to_new_tab sidebar_section session_switch projects \
+  >/dev/null 2>&1 || rollback "fallan los tests de la barra lateral"
 
 cp "${CARGO_TARGET_DIR:-target}/release/herdr" "$bin.new" || rollback "no encuentro el binario compilado"
 cp -p "$bin" "$bin.prev"

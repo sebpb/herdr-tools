@@ -102,15 +102,17 @@ Notas:
 
 ## Opcional: chats agrupados por workspace
 
-Con el build de Herdr de [sebpb/herdr](https://github.com/sebpb/herdr/tree/group-agents-by-space) (rama `group-agents-by-space`), el panel de chats muestra un encabezado por workspace con sus chats debajo, en lugar de repetir el workspace en cada fila. Además:
+Con el build de Herdr de [sebpb/herdr](https://github.com/sebpb/herdr/tree/projects) (rama `projects`), el panel de chats muestra un encabezado por workspace con sus chats debajo, en lugar de repetir el workspace en cada fila. Además:
 
 - Arrastrar un chat lo reordena, o lo mueve a otro workspace soltándolo debajo de otro encabezado.
 - Clic derecho en un chat abre el menú de su pestaña (nueva, renombrar, cerrar); en un encabezado, el del workspace.
+- Clic en un encabezado («▾ Álamo») oculta o muestra sus chats; clic en el título de una sección («projects», «spaces», «agents») la minimiza.
+- Sección **projects** arriba de «spaces»: un clic cambia de proyecto sin salir de Herdr (suspende el actual, avisando si se pierde algo), «new» crea uno y el clic derecho permite renombrarlo o borrarlo. Con este build no hacen falta el lanzador `herdr-proyectos` ni el popup de Proyectos.
 
 Para compilarlo hace falta Rust y [Zig 0.16.0](https://ziglang.org/download/):
 
 ```bash
-git clone -b group-agents-by-space https://github.com/sebpb/herdr.git
+git clone -b projects https://github.com/sebpb/herdr.git
 cd herdr
 ZIG=/ruta/a/zig cargo build --release
 cp target/release/herdr ~/.local/bin/herdr
